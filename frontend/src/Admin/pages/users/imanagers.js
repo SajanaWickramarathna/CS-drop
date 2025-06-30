@@ -12,7 +12,7 @@ export default function Managers({onManagerSelect, onManagerDelete}) {
 
   const fetchManagers = async () => {
     try {
-      const response = await axios.get('http://localhost:3001/api/inventoryManager/inventoryManager');
+      const response = await axios.get('http://localhost:3001/api/inventoryManagers/inventoryManagers');
       setManagers(response.data);
     } catch (error) {
       console.error('Error fetching managers:', error);
@@ -21,7 +21,7 @@ export default function Managers({onManagerSelect, onManagerDelete}) {
 
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`http://localhost:3001/api/inventoryManager/customer?id=${id}`);
+      await axios.delete(`http://localhost:3001/api/inventoryManagers/customer?id=${id}`);
       setManagers(managers.filter(customer => customer._id !== id));
     } catch (error) {
       console.error('Error deleting customer:', error);
