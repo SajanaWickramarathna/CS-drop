@@ -37,4 +37,8 @@ router.get('/admin-dashboard', authMiddleware(['admin']), (req, res) => {
     res.json({ message: 'Welcome to Customer Support Dashboard' });
   });
 
+  router.get('/inventory-dashboard', authMiddleware(['inventory_manager']), (req, res) => {
+    res.json({ message: 'Welcome to Inventory Dashboard' });
+  });
+
 module.exports = router;

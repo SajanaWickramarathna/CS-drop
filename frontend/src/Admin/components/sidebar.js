@@ -7,7 +7,7 @@ import PeopleIcon from "@mui/icons-material/PeopleAltOutlined";
 import InventoryIcon from "@mui/icons-material/Inventory2Outlined";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCartOutlined";
 import SettingsIcon from "@mui/icons-material/SettingsOutlined";
-import PromotionIcon from "@mui/icons-material/DiscountOutlined";
+
 import axios from "axios";
 
 
@@ -97,7 +97,7 @@ export default function Sidebar() {
               className={({ isActive }) =>
                 `block py-[5px] px-4 rounded-md ${
                   isActive
-                    ? "text-white bg-custom-gradient "
+                    ? "text-black bg-custom-gradient "
                     : "hover:bg-gray-100 transition-all"
                 }`
               }
@@ -136,7 +136,7 @@ export default function Sidebar() {
                   className={({ isActive }) =>
                     `block py-[5px] px-12 ${
                       isActive
-                      ? "text-white bg-custom-gradient "
+                      ? "text-black bg-custom-gradient "
                       : "hover:bg-gray-100 transition-all"
                     }`
                   }
@@ -146,17 +146,17 @@ export default function Sidebar() {
               </li>
               <li className="text-md ">
                 <NavLink
-                  to="/admin-dashboard/users/managers"
+                  to="/admin-dashboard/users/inventoryManager"
                   state={{data: userData}}
                   className={({ isActive }) =>
                     `block py-[5px] px-12 ${
                       isActive
-                      ? "text-white bg-custom-gradient "
+                      ? "text-black bg-custom-gradient "
                       : "hover:bg-gray-100 transition-all"
                     }`
                   }
                 >
-                  Managers
+                  Inventory
                 </NavLink>
               </li>
               <li className="text-md ">
@@ -166,7 +166,7 @@ export default function Sidebar() {
                   className={({ isActive }) =>
                     `block py-[5px] px-12 ${
                       isActive
-                      ? "text-white bg-custom-gradient "
+                      ? "text-black bg-custom-gradient "
                       : "hover:bg-gray-100 transition-all"
                     }`
                   }
@@ -176,27 +176,12 @@ export default function Sidebar() {
               </li>
               <li className="text-md ">
                 <NavLink
-                  to="/admin-dashboard/users/delivers"
-                  state={{data: userData}}
-                  className={({ isActive }) =>
-                    `block py-[5px] px-12 ${
-                      isActive
-                      ? "text-white bg-custom-gradient "
-                      : "hover:bg-gray-100 transition-all"
-                    }`
-                  }
-                >
-                  Delivers
-                </NavLink>
-              </li>
-              <li className="text-md ">
-                <NavLink
                   to="/admin-dashboard/users/admins"
                   state={{data: userData}}
                   className={({ isActive }) =>
                     `block py-[5px] px-12 ${
                       isActive
-                      ? "text-white bg-custom-gradient "
+                      ? "text-black bg-custom-gradient "
                       : "hover:bg-gray-100 transition-all"
                     }`
                   }
@@ -233,7 +218,7 @@ export default function Sidebar() {
                     className={({ isActive }) =>
                       `block py-[5px] px-12 ${
                         isActive
-                        ? "text-white bg-custom-gradient "
+                        ? "text-black bg-custom-gradient "
                         : "hover:bg-gray-100 transition-all"
                       }`
                     }
@@ -248,7 +233,7 @@ export default function Sidebar() {
                     className={({ isActive }) =>
                       `block py-[5px] px-12 ${
                         isActive
-                        ? "text-white bg-custom-gradient "
+                        ? "text-black bg-custom-gradient "
                         : "hover:bg-gray-100 transition-all"
                       }`
                     }
@@ -263,7 +248,7 @@ export default function Sidebar() {
                     className={({ isActive }) =>
                       `block py-[5px] px-12 ${
                         isActive
-                        ? "text-white bg-custom-gradient "
+                        ? "text-black bg-custom-gradient "
                         : "hover:bg-gray-100 transition-all"
                       }`
                     }
@@ -278,7 +263,7 @@ export default function Sidebar() {
                     className={({ isActive }) =>
                       `block py-[5px] px-12 ${
                         isActive
-                        ? "text-white bg-custom-gradient "
+                        ? "text-black bg-custom-gradient "
                         : "hover:bg-gray-100 transition-all"
                       }`
                     }
@@ -298,7 +283,7 @@ export default function Sidebar() {
               className={({ isActive }) =>
                 `block py-[5px] px-4 rounded-md ${
                   isActive
-                  ? "text-white bg-custom-gradient "
+                  ? "text-black bg-custom-gradient "
                   : "hover:bg-gray-100 transition-all"
                 }`
               }
@@ -310,26 +295,6 @@ export default function Sidebar() {
             </NavLink>
           </li>
 
-          {/* Promotion Link*/  }
-          <li className="py-2 px-4 text-md">
-            <NavLink
-              to="/admin-dashboard/promotions"
-              state={{data: userData}}
-              className={({ isActive }) =>
-                `block py-[5px] px-4 rounded-md ${
-                  isActive
-                  ? "text-white bg-custom-gradient "
-                  : "hover:bg-gray-100 transition-all"
-                }`
-              }
-            >
-              <span className="mr-2">
-                <PromotionIcon />
-              </span>
-              Promotions
-            </NavLink>
-          </li>
-        
           {/* Analytics Link*/  }
           <li className="py-2 px-4 text-md">
             <button
@@ -356,7 +321,7 @@ export default function Sidebar() {
                     className={({ isActive }) =>
                       `block py-[5px] px-12 ${
                         isActive
-                        ? "text-white bg-custom-gradient "
+                        ? "text-black bg-custom-gradient "
                         : "hover:bg-gray-100 transition-all"
                       }`
                     }
@@ -370,7 +335,7 @@ export default function Sidebar() {
                     className={({ isActive }) =>
                       `block py-[5px] px-12 ${
                         isActive
-                        ? "text-white bg-custom-gradient "
+                        ? "text-black bg-custom-gradient "
                         : "hover:bg-gray-100 transition-all"
                       }`
                     }
@@ -385,7 +350,7 @@ export default function Sidebar() {
                     className={({ isActive }) =>
                       `block py-[5px] px-12 ${
                         isActive
-                        ? "text-white bg-custom-gradient "
+                        ? "text-black bg-custom-gradient "
                         : "hover:bg-gray-100 transition-all"
                       }`
                     }
@@ -408,7 +373,7 @@ export default function Sidebar() {
               className={({ isActive }) =>
                 `block py-[5px] px-4 rounded-md ${
                   isActive
-                  ? "text-white bg-custom-gradient "
+                  ? "text-black bg-custom-gradient "
                   : "hover:bg-gray-100 transition-all"
                 }`
               }
@@ -431,13 +396,6 @@ export default function Sidebar() {
           Logout
         </button>
       </div>
-
-        <footer className="py-3 text-sm text-center">
-            <div>
-                2025 <Copyright aria-label="Copyright" /> All Rights Reserved.
-            </div>
-            <div>S JAY Web Solutions (Pvt) Ltd.</div>
-        </footer>
     </div>
   );
 }
