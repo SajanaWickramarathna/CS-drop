@@ -52,24 +52,31 @@ export default function Brand() {
   };
 
   const deleteBrand = async () => {
-    if (!deleteData) return;
+  if (!deleteData) return;
 
-    try{
-      const response = await axios.delete(`http://localhost:3001/api/brands/deletebrand?id=${deleteData.id}`);
-      const catResponse = await axios.delete(`http://localhost:3001/api/categories/deletebrandscategory?id=${deleteData.id}`);
-      const proResponse = await axios.delete(`http://localhost:3001/api/products/deleteproductbrand?id=${deleteData.id}`)
-      if (response.status === 200 && catResponse.status === 200 && proResponse.status === 200) {
-        handleClickClose();
-        setTimeout(() => {
-          window.location.reload();
-        })
+  try {
+    const results = await Promise.allSettled([
+      axios.delete(`http://localhost:3001/api/brands/deletebrand?id=${deleteData.id}`),
+      axios.delete(`http://localhost:3001/api/categories/deletebrandscategory?id=${deleteData.id}`),
+      axios.delete(`http://localhost:3001/api/products/deleteproductbrand?id=${deleteData.id}`),
+    ]);
+
+    results.forEach((result, index) => {
+      if (result.status === "rejected") {
+        console.error(`Error in delete call ${index + 1}:`, result.reason);
       }
-    }catch (error) {
-      handleClickClose();
-      console.error('Axios Error:', error);
-      throw error;
-    }
-  };
+    });
+
+    handleClickClose();
+    setTimeout(() => {
+      window.location.reload();
+    });
+  } catch (error) {
+    handleClickClose();
+    console.error("Unexpected error during deletion:", error);
+  }
+};
+
 
   return (
     <div className="container">

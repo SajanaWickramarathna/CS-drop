@@ -82,7 +82,7 @@ const ProductViewPage = () => {
               <div className='space-y-6'>
                 <Typography variant='body1' className='text-gray-700'>{product.product_description}</Typography>
                 <Typography variant='h5' className='font-semibold text-green-700'>Rs.{product.product_price}</Typography>
-                <Rating name='product-rating' value={4} readOnly size='large' />
+                {/*<Rating name='product-rating' value={4} readOnly size='large' />*/}
                 {/*<Typography variant='body2' className={`text-sm ${product.stock_count > 0 ? 'text-green-600' : 'text-red-600'}`}>Stock: {product.stock_count > 0 ? `${product.stock_count} available` : 'Out of stock'}</Typography>*/}
                 <div className='flex gap-4'>
                   <Button variant='contained' color='primary' startIcon={<ShoppingCart />} className='mt-4 py-2 px-5 rounded-md text-white shadow hover:shadow-lg' onClick={()=> handleAddToCart(product.product_id)}>

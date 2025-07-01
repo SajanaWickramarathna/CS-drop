@@ -48,32 +48,41 @@ export default function Product() {
   };
 
   const deleteProduct = async () => {
-    if (!deleteData) return;
+  if (!deleteData) return;
 
-    try {
-        const deleteProductData = await axios.get(`http://localhost:3001/api/products/product?id=${deleteData.id}`);
-        const response = await axios.delete(`http://localhost:3001/api/products/deleteproduct?id=${deleteData.id}`);
-        const stockChange = await axios.post("http://localhost:3001/api/stocks/addstock", {
-          product_id : deleteProductData.data.product_id,
-          product_name: deleteProductData.data.product_name,
-          brand_id: deleteProductData.data.brand_id,
-          category_id: deleteProductData.data.category_id,
-          quantity: deleteProductData.data.stock_count,
-          type:"remove"});
+  try {
+    const productDetailsResponse = await axios.get(`http://localhost:3001/api/products/product?id=${deleteData.id}`);
+    const productDetails = productDetailsResponse.data;
 
-      if (response.status === 200 && stockChange.status === 200) {
-        
-            handleClickClose();
-            setTimeout(() => {
-            window.location.reload();
-        });
+    const results = await Promise.allSettled([
+      axios.delete(`http://localhost:3001/api/products/deleteproduct?id=${deleteData.id}`),
+      axios.post("http://localhost:3001/api/stocks/addstock", {
+        product_id: productDetails.product_id,
+        product_name: productDetails.product_name,
+        brand_id: productDetails.product_brand_id,
+        category_id: productDetails.product_category_id,
+        //quantity: productDetails.stock_count,
+        type: "remove"
+      })
+    ]);
+
+    // Optional: Log which ones failed
+    results.forEach((result, index) => {
+      if (result.status === "rejected") {
+        console.error(`Error in operation ${index + 1}:`, result.reason);
       }
-    } catch (error) {
-      handleClickClose();
-      console.error('Axios Error:', error);
-      throw error;
-    }
-  };
+    });
+
+    handleClickClose();
+    setTimeout(() => {
+      window.location.reload();
+    });
+  } catch (error) {
+    handleClickClose();
+    console.error('Unexpected error during deletion:', error);
+  }
+};
+
 
   return (
     <div className="container">

@@ -12,7 +12,7 @@ export default function Shop() {
   const [brands, setBrands] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState('');
   const [selectedBrand, setSelectedBrand] = useState('');
-  const [maxPrice, setMaxPrice] = useState(1000000);
+  const [maxPrice, setMaxPrice] = useState(1000000000);
   const [searchQuery, setSearchQuery] = useState('');
   
   const token = localStorage.getItem('token');
@@ -136,7 +136,7 @@ export default function Shop() {
             <input
               type="range"
               min="0"
-              max="1000000"
+              max="1000000000"
               value={maxPrice}
               onChange={(e) => setMaxPrice(Number(e.target.value))}
               className="w-full appearance-none bg-gray-300 rounded-lg h-2 cursor-pointer"

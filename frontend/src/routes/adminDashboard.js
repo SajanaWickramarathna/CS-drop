@@ -8,8 +8,6 @@ import Users from '../Admin/pages/users/users';
 
 import UserAnalytics from '../Admin/pages/analytics/users';
 import OrderAnalytics from '../Admin/pages/analytics/orders';
-import ProductAnalytics from '../Admin/pages/analytics/products';
-
 
 import Settings from '../Admin/pages/settings';
 import Products from '../Admin/pages/products/products';
@@ -62,7 +60,7 @@ export default function AdminDashboard() {
 
               <Route path="/analytics/users" element={<UserAnalytics />} />
               <Route path="/analytics/orders" element={<OrderAnalytics />} />
-              <Route path="/analytics/products" element={<ProductAnalytics />} />
+              
 
             </Routes>
           </div>

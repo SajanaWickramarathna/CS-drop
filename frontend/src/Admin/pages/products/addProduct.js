@@ -153,6 +153,10 @@ export default function Addproduct() {
         setCatId("");
         setProductImage(null);
         setPreview(null);
+        // Redirect after a short delay
+        setTimeout(() => {
+          window.location.href = "/admin-dashboard/products";
+        }, 1500);
       } else {
         setErrorMessage("Failed to add product. Please try again.");
       }

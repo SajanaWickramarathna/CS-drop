@@ -314,7 +314,7 @@ export default function Sidebar() {
                     Users
                   </NavLink>
                 </li>
-                <li className="text-md">
+                {/*<li className="text-md">
                   <NavLink
                     to="/admin-dashboard/analytics/products"
                     className={({ isActive }) =>
@@ -327,7 +327,7 @@ export default function Sidebar() {
                   >
                     Products
                   </NavLink>
-                </li>
+                </li>*/}
                 <li className="text-md">
                   <NavLink
                     to="/admin-dashboard/analytics/orders"
