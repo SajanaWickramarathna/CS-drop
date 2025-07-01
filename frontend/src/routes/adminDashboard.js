@@ -2,7 +2,7 @@ import React from 'react';
 import Sidebar from "../Admin/components/sidebar";
 import {Route, Routes } from 'react-router-dom';
 import Dashboard from '../Admin/pages/dashboard';
-
+import Header from '../Admin/components/header';
 import Users from '../Admin/pages/users/users';
 
 
@@ -35,6 +35,11 @@ export default function AdminDashboard() {
 
 
         <div className="flex-1 flex flex-col">
+
+          {/* Navigation Bar */}
+                  <div className="h-14 m-4 shadow-lg">
+                   <Header/>
+                  </div>
 
 
           <div className="flex-1 p-4 overflow-y-auto">

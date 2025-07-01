@@ -1,24 +1,23 @@
-import axios from 'axios';
-import React, { useEffect, useState } from 'react';
-
+import axios from "axios";
+import React, { useEffect, useState } from "react";
 
 export default function Addproduct() {
   const [formData, setFormData] = useState({
     product_name: "",
     product_description: "",
     product_price: "",
-    stock_count: "",
+    //stock_count: "",
     product_status: "",
   });
 
-  const [brandId,setBrandId] = useState();
+  const [brandId, setBrandId] = useState();
   const [catId, setCatId] = useState();
-  const [productImage,setProductImage] = useState();
+  const [productImage, setProductImage] = useState();
   const [preview, setPreview] = useState(null);
   const [brands, setBrands] = useState([]);
   const [categories, setCategories] = useState([]);
-  const [successMessage, setSuccessMessage] = useState('');
-  const [errorMessage, setErrorMessage] = useState('');
+  const [successMessage, setSuccessMessage] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
 
   const handleChange = (e) => {
     if (!brandId) {
@@ -30,13 +29,13 @@ export default function Addproduct() {
 
   const handleBrandId = (e) => {
     setBrandId(e.target.value);
-    setErrorMessage(""); 
-  }
+    setErrorMessage("");
+  };
 
   const handleCategoryId = (e) => {
     setCatId(e.target.value);
-    setErrorMessage(""); 
-  }
+    setErrorMessage("");
+  };
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
@@ -53,7 +52,7 @@ export default function Addproduct() {
       const response = await axios.get(`http://localhost:3001/api/brands/`);
       if (!response.data || response.data.length === 0) {
         setErrorMessage("No brands found");
-        alert("A brand must be added before adding products"); 
+        alert("A brand must be added before adding products");
         window.location.href = "/admin-dashboard/brands";
         return;
       }
@@ -65,12 +64,13 @@ export default function Addproduct() {
   };
 
   const getCategories = async () => {
-
     try {
-      const response = await axios.get(`http://localhost:3001/api/categories/categorybybrand?brandId=${brandId}`);
+      const response = await axios.get(
+        `http://localhost:3001/api/categories/categorybybrand?brandId=${brandId}`
+      );
       if (!response.data || response.data.length === 0) {
         setErrorMessage("No categories found");
-        alert("A category must be added before adding products"); 
+        alert("A category must be added before adding products");
         window.location.href = "/admin-dashboard/category";
         return;
       }
@@ -80,20 +80,20 @@ export default function Addproduct() {
       console.error("Error fetching categories:", error);
     }
   };
-  
+
   useEffect(() => {
     getBrands();
   }, []);
 
   useEffect(() => {
-    if(brandId){
+    if (brandId) {
       getCategories();
     }
   }, [brandId]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-  
+
     // Check if brandId is selected
     if (!brandId) {
       setErrorMessage("Please select a brand before submitting.");
@@ -105,35 +105,64 @@ export default function Addproduct() {
       return;
     }
 
-    if(formData.stock_count < 100){
+    {
+      /*if(formData.stock_count < 100){
       setErrorMessage("Stock count must be more than 100");
       return;
+    }*/
     }
-  
+
     // Prepare form data
     const formDataToSend = new FormData();
     formDataToSend.append("product_name", formData.product_name);
     formDataToSend.append("product_description", formData.product_description);
     formDataToSend.append("product_status", formData.product_status);
     formDataToSend.append("product_price", formData.product_price);
-    formDataToSend.append("stock_count", formData.stock_count);
+    //formDataToSend.append("stock_count", formData.stock_count);
     formDataToSend.append("product_brand_id", brandId);
     formDataToSend.append("product_category_id", catId);
-  
+
     if (productImage) {
       formDataToSend.append("product_image", productImage);
     }
-  
-    try {
-      const response = await axios.post("http://localhost:3001/api/products/addproduct", formDataToSend, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
 
-      const catCount = await axios.put(`http://localhost:3001/api/categories/updateprocount?id=${catId}`);
-  
+    try {
+      const response = await axios.post(
+        "http://localhost:3001/api/products/addproduct",
+        formDataToSend,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+
+      const catCount = await axios.put(
+        `http://localhost:3001/api/categories/updateprocount?id=${catId}`
+      );
+
       if (response.status === 200 && catCount.status === 200) {
+        alert("Product Added Successfully");
+        setSuccessMessage("Process complete. Redirecting....");
+        setFormData({
+          product_name: "",
+          product_description: "",
+          product_status: "",
+        });
+        setBrandId("");
+        setCatId("");
+        setProductImage(null);
+        setPreview(null);
+      } else {
+        setErrorMessage("Failed to add product. Please try again.");
+      }
+    } catch (err) {
+      setErrorMessage("Failed to add product. Please try again.");
+    }
+  };
+
+  {
+    /*if (response.status === 200 && catCount.status === 200) {
         try {
 
           const product = await axios.get(`http://localhost:3001/api/products/productid?product_name=${formData.product_name}&brandId=${brandId}&catId=${catId}`);
@@ -176,10 +205,8 @@ export default function Addproduct() {
     } catch (error) {
       setErrorMessage(error.response?.data?.error || "Error adding product.");
     }
-  };
-  
-
-
+  };*/
+  }
 
   return (
     <div className="container bg-white  rounded-2xl p-4 mt-6 min-h-[75vh]">
@@ -187,7 +214,9 @@ export default function Addproduct() {
         className="w-full mx-auto bg-white p-6 rounded-lg shadow-md"
         onSubmit={handleSubmit}
       >
-        <h2 className="text-2xl font-bold text-gray-800 mb-6">Add New Product</h2>
+        <h2 className="text-2xl font-bold text-gray-800 mb-6">
+          Add New Product
+        </h2>
 
         {/* Success/Error Messages */}
         {successMessage && (
@@ -199,7 +228,10 @@ export default function Addproduct() {
 
         {/* Brand */}
         <div className="mb-4">
-          <label htmlFor="product-brand" className="block text-gray-700 font-medium mb-2">
+          <label
+            htmlFor="product-brand"
+            className="block text-gray-700 font-medium mb-2"
+          >
             Brand
           </label>
           <select
@@ -209,7 +241,9 @@ export default function Addproduct() {
             name="brand_id"
             required
           >
-            <option value="" selected disabled>Select Brand</option>
+            <option value="" selected disabled>
+              Select Brand
+            </option>
             {brands.map((brand) => (
               <option key={brand.brand_id} value={brand.brand_id}>
                 {brand.brand_name}
@@ -220,7 +254,10 @@ export default function Addproduct() {
 
         {/* Category */}
         <div className="mb-4">
-          <label htmlFor="product-category" className="block text-gray-700 font-medium mb-2">
+          <label
+            htmlFor="product-category"
+            className="block text-gray-700 font-medium mb-2"
+          >
             Category
           </label>
           <select
@@ -231,7 +268,9 @@ export default function Addproduct() {
             disabled={!brandId}
             required
           >
-            <option value="" selected disabled>Select Category</option>
+            <option value="" selected disabled>
+              Select Category
+            </option>
             {categories.map((category) => (
               <option key={category.category_id} value={category.category_id}>
                 {category.category_name}
@@ -242,7 +281,10 @@ export default function Addproduct() {
 
         {/* Product Name */}
         <div className="mb-4">
-          <label htmlFor="product-name" className="block text-gray-700 font-medium mb-2">
+          <label
+            htmlFor="product-name"
+            className="block text-gray-700 font-medium mb-2"
+          >
             Product Name
           </label>
           <input
@@ -258,7 +300,10 @@ export default function Addproduct() {
 
         {/* Product Description */}
         <div className="mb-4">
-          <label htmlFor="product-description" className="block text-gray-700 font-medium mb-2">
+          <label
+            htmlFor="product-description"
+            className="block text-gray-700 font-medium mb-2"
+          >
             Product Description
           </label>
           <textarea
@@ -274,12 +319,15 @@ export default function Addproduct() {
 
         {/* Product Price */}
         <div className="mb-4">
-          <label htmlFor="product-price" className="block text-gray-700 font-medium mb-2">
+          <label
+            htmlFor="product-price"
+            className="block text-gray-700 font-medium mb-2"
+          >
             Product Price (LKR)
           </label>
           <input
             type="number"
-            id="product-price" 
+            id="product-price"
             name="product_price"
             value={formData.product_price}
             onChange={handleChange}
@@ -293,7 +341,10 @@ export default function Addproduct() {
 
         {/* Product Image */}
         <div className="mb-4">
-          <label htmlFor="product-image" className="block text-gray-700 font-medium mb-2">
+          <label
+            htmlFor="product-image"
+            className="block text-gray-700 font-medium mb-2"
+          >
             Product Image
           </label>
           <input
@@ -305,11 +356,16 @@ export default function Addproduct() {
             required
           />
           {preview && (
-            <img src={preview} alt="Brand Preview" className="mt-2 w-32 h-32 object-cover rounded-md" />
+            <img
+              src={preview}
+              alt="Brand Preview"
+              className="mt-2 w-32 h-32 object-cover rounded-md"
+            />
           )}
         </div>
 
-        {/* Stock Count */}
+        {/* Stock Count (Optional) */}
+        {/* Uncomment if you want to include stock count
         <div className="mb-4">
           <label htmlFor="stock-count" className="block text-gray-700 font-medium mb-2">
             Stock Count
@@ -326,11 +382,14 @@ export default function Addproduct() {
             placeholder="Enter the Stock Count"
             className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-200"
           />
-        </div>
+        </div>*/}
 
         {/* Product Status */}
         <div className="mb-4">
-          <label htmlFor="product_status" className="block text-gray-700 font-medium mb-2">
+          <label
+            htmlFor="product_status"
+            className="block text-gray-700 font-medium mb-2"
+          >
             Status
           </label>
           <select
@@ -341,13 +400,13 @@ export default function Addproduct() {
             name="product_status"
             required
           >
-            <option value="" disabled>Select Status</option>
+            <option value="" disabled>
+              Select Status
+            </option>
             <option value="active">Active</option>
             <option value="inactive">Inactive</option>
           </select>
         </div>
-
-        
 
         {/* Submit Button */}
         <button

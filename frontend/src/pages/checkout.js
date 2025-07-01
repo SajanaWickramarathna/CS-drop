@@ -285,7 +285,7 @@ const Checkout = ({ userId, cartTotal }) => {
         <div className="bg-white rounded shadow p-4 mb-6">
           <h2 className="font-semibold text-lg mb-2">Order Summary</h2>
           <div className="flex justify-between mb-1">
-            <span>Machines ({cart.items.length})</span>
+            <span>Product ({cart.items.length})</span>
             <span>LKR {totalPrice.toLocaleString()}</span>
           </div>
           {discountedPrice != 0 && (

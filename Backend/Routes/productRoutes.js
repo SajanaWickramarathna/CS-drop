@@ -11,7 +11,7 @@ router.get('/productbybrand',ProductController.getProductByBrandId);
 router.get('/productid', ProductController.getProductId);
 router.post('/addproduct', upload.single("product_image"), ProductController.addProduct); 
 router.put('/updateproduct', upload.single("product_image"), ProductController.updateProduct);
-router.put('/stockupdate',ProductController.reduceProductStock);
+//router.put('/stockupdate',ProductController.reduceProductStock);
 
 router.delete('/deleteproduct', ProductController.deleteProduct); 
 router.delete('/deleteproductcategory',ProductController.deleteProductbyCategory);

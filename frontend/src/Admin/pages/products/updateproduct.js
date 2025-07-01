@@ -31,7 +31,7 @@ export default function UpdateProduct({ updateProduct }) {
         product_name: productDataFromLocation.product_name || '',
         product_description: productDataFromLocation.product_description || '',
         product_price: productDataFromLocation.product_price || '',
-        stock_count: productDataFromLocation.stock_count || '',
+        //stock_count: productDataFromLocation.stock_count || '',
         product_status: productDataFromLocation.product_status || 'active',
         product_image: productDataFromLocation.product_image || '',
         product_brand_id: productDataFromLocation.product_brand_id || '', 
@@ -109,7 +109,7 @@ export default function UpdateProduct({ updateProduct }) {
     formDataToSend.append('product_name', productData.product_name);
     formDataToSend.append('product_description', productData.product_description);
     formDataToSend.append('product_price', productData.product_price);
-    formDataToSend.append('stock_count', productData.stock_count);
+    //formDataToSend.append('stock_count', productData.stock_count);
     formDataToSend.append('product_status', productData.product_status);
     formDataToSend.append('product_brand_id', productData.product_brand_id);
     if (productImage) formDataToSend.append('product_image', productImage);
@@ -248,7 +248,7 @@ export default function UpdateProduct({ updateProduct }) {
           />
         </div>
 
-        <div className="mb-4">
+        {/*<div className="mb-4">
           <label className="block text-gray-700 font-medium mb-2">Stock Count</label>
           <input
             type="number"
@@ -258,7 +258,7 @@ export default function UpdateProduct({ updateProduct }) {
             onChange={handleInputChange}
             required
           />
-        </div>
+        </div>*/}
 
         <div className="mb-4">
           <label className="block text-gray-700 font-medium mb-2">Status</label>

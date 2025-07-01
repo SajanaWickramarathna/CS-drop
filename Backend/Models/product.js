@@ -9,7 +9,7 @@ const counterSchema = new Schema({
 
 const Counter = mongoose.models.counter || mongoose.model("counter", counterSchema);
 
-// brand Schema
+// Product Schema
 const productSchema = new Schema({
   product_id: { type: Number, unique: true },
   product_name: { type: String, required: true },
@@ -21,7 +21,6 @@ const productSchema = new Schema({
   product_category_name: { type: String },
   product_brand_id: { type: Number, required: true },
   product_brand_name: { type: String },
-  stock_count: {type: Number, default: 0},
   created_at: { type: Date, default: Date.now },
 });
 

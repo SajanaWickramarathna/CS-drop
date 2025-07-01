@@ -31,7 +31,7 @@ export default function Allproduct({onProductSelect , onProductDelete }) {
             <TableCell className='!font-bold !text-[14px] !uppercase !text-center'>Product ID</TableCell>
             <TableCell className='!font-bold !text-[14px] !uppercase !text-center'>Product Name</TableCell>
             <TableCell className='!font-bold !text-[14px] !uppercase !text-center'>Status</TableCell>
-            <TableCell className='!font-bold !text-[14px] !uppercase !text-center'>Stock Count</TableCell>
+            {/*<TableCell className='!font-bold !text-[14px] !uppercase !text-center'>Stock Count</TableCell>*/}
             <TableCell className='!font-bold !text-[14px] !uppercase !text-center'>Actions</TableCell>
           </TableRow>
         </TableHead>
@@ -42,7 +42,7 @@ export default function Allproduct({onProductSelect , onProductDelete }) {
                 <TableCell  className='!text-center'>{row.product_id}</TableCell>
                 <TableCell className='!text-center'>{row.product_name}</TableCell>
                 <TableCell  className='!text-center'>{row.product_status}</TableCell>
-                <TableCell  className='!text-center'>{row.stock_count}</TableCell>
+                {/*<TableCell  className='!text-center'>{row.stock_count}</TableCell>*/}
                 <TableCell>
                   <div className='flex gap-6 justify-center'>
                     <Button className='!bg-custom-gradient !px-4 !text-white hover:!bg-[#6610f2]' onClick={() => onProductSelect({id:row.product_id , name: row.product_name})}  startIcon={<Edit/>}>Edit</Button>

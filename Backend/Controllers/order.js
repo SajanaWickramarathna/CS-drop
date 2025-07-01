@@ -9,7 +9,7 @@ const transporter = nodemailer.createTransport({
   service: "gmail",
   auth: {
     user: "sajanaanupama123@gmail.com",
-    pass: "melc veit raso vsq",
+    pass: "melc veit raso vsqm",
   },
 });
 
@@ -89,7 +89,7 @@ exports.createOrder = async (req, res) => {
 
     // Admin email
     sendEmail(
-      "abhishekappuhamy12@gmail.com",
+      "sajanaanupama123@gmail.com",
       "📦 New Order Received - KHB Associates",
       `New order from ${user?.firstName || "N/A"} (${user?.email})\nOrder ID: ${
         newOrder._id

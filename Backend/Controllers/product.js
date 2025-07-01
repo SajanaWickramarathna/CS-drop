@@ -75,7 +75,7 @@ exports.getProductByCategoryId = async (req, res) => {
 
 exports.addProduct = async (req, res) => {
     try {
-        const { product_name, product_description, product_status , product_price, product_brand_id,product_category_id, stock_count} = req.body;
+        const { product_name, product_description, product_status , product_price, product_brand_id,product_category_id} = req.body;
         const product = new Product({
             product_name,
             product_description,
@@ -84,7 +84,7 @@ exports.addProduct = async (req, res) => {
             product_price,
             product_brand_id,
             product_category_id,
-            stock_count
+            //stock_count
         });
         await product.save();
         res.json({ message: "Product added successfully", product });
@@ -95,7 +95,7 @@ exports.addProduct = async (req, res) => {
 
 exports.updateProduct = async (req, res) => {
     try {
-        const { product_name, product_description, product_status , product_price,stock_count } = req.body;
+        const { product_name, product_description, product_status , product_price } = req.body;
 
         const product_id = req.body.product_id;
 
@@ -104,7 +104,7 @@ exports.updateProduct = async (req, res) => {
             product_description,
             product_status,
             product_price,
-            stock_count
+            //stock_count
         };
 
         if (req.file) updateData.product_image = `/uploads/${req.file.filename}`;
@@ -119,7 +119,7 @@ exports.updateProduct = async (req, res) => {
     }
 };
 
-exports.reduceProductStock = async (req, res) => {
+/*exports.reduceProductStock = async (req, res) => {
     try {
         const { product_id, reduceBy } = req.body;
 
@@ -150,7 +150,7 @@ exports.reduceProductStock = async (req, res) => {
         console.error("Error reducing stock count:", error);
         res.status(500).json({ error: "Error reducing stock count" });
     }
-};
+};*/
 
 
 exports.deleteProduct = async(req, res) => {
