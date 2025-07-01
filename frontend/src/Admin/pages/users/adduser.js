@@ -17,6 +17,10 @@ export default function AddUser() {
     registerText = 'new customer';
   } else if (role === 'admin') {
     registerText = 'new admin';
+  } else if (role === 'deliver') {
+    registerText = 'new deliver';
+  } else if (role === 'manager') {
+    registerText = 'new inventory manager';
   } else {
     registerText = 'new customer supporter';
   }
@@ -75,6 +79,14 @@ export default function AddUser() {
         });
       }else if(role === 'supporter'){
         response = await axios.post("http://localhost:3001/api/supporters/signup", formDataToSend, {
+          headers: { "Content-Type": "multipart/form-data" },
+        });
+      }else if(role === 'manager') {
+        response = await axios.post("http://localhost:3001/api/managers/signup", formDataToSend,{
+          headers: { "Content-Type": "multipart/form-data" },
+        });
+      }else if (role === 'deliver') {
+        response = await axios.post("http://localhost:3001/api/delivers/signup", formDataToSend, {
           headers: { "Content-Type": "multipart/form-data" },
         });
       }else if (role === 'admin'){

@@ -6,7 +6,6 @@ import ProtectedRoute from "./components/protectedRoute";
 import Admin from "./routes/adminDashboard";
 import Customer from "./routes/customerDashboard";
 import CustomerSupporter from "./routes/supportDashboard";
-import InventoryManager from "./routes/inventoryManagerDashboard";
 import Login from "./pages/signin";
 import Signup from "./pages/signup";
 import Logout from "./components/logout";
@@ -53,14 +52,6 @@ function App() {
           element={
             <ProtectedRoute allowedRoles={["admin"]}>
               <Admin />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/inventory-dashboard/*"
-          element={
-            <ProtectedRoute allowedRoles={["inventory_manager"]}>
-              <InventoryManager />
             </ProtectedRoute>
           }
         />

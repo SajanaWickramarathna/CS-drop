@@ -14,7 +14,7 @@ const supporterRoutes = require("./Routes/customerSupporterRoutes");
 const contactrouter = require('./Routes/contactroute');
 const ticketRouter = require('./Routes/ticketroute');
 const chatRouter = require('./Routes/chatRoute');
-const inventoryManagerRoutes = require('./Routes/inventoryManagerRoutes');
+
 
 router.use("/brands", brandRoutes); 
 router.use("/categories", categoryRoutes);
@@ -29,6 +29,7 @@ router.use("/supporters", supporterRoutes);
 router.use("/contact", contactrouter);
 router.use("/tickets", ticketRouter);
 router.use("/chats", chatRouter);
-router.use("/inventoryManager", inventoryManagerRoutes);
+
+
 
 module.exports = router;

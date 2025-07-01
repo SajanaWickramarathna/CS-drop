@@ -16,7 +16,7 @@ const userSchema = new Schema({
     email: {type: String,required: true,unique: true},
     password: {type: String,required: true},
     profilePic: {type: String},
-    role: {type: String,enum: ['admin', 'customer','customer_supporter', 'inventory_manager'],default: 'customer'},
+    role: {type: String,enum: ['admin', 'customer','customer_supporter'],default: 'customer'},
     address: {type: String},
     phone: {type: String},
     userStatus: {type: String,enum: ['active', 'inactive'],default: 'active'},
