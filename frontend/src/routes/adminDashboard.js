@@ -16,6 +16,8 @@ import AddProduct from '../Admin/pages/products/addProduct';
 
 import Account from '../Admin/pages/account';
 
+import Brands from '../Admin/pages/brands/brands';
+import Category from '../Admin/pages/category/category';
 
 import Orders from '../Admin/pages/orders/orders';
 import UpdateOrder from '../Admin/pages/orders/updateorder';
@@ -53,7 +55,8 @@ export default function AdminDashboard() {
               <Route path="/updateorder" element={<UpdateOrder />} />
               <Route path="/vieworder/:orderId" element={<ViewOrder />} />
 
-
+              <Route path="/brands/*" element={<Brands />} />
+              <Route path="/category/*" element={<Category />} />
 
               <Route path="/analytics/users" element={<UserAnalytics />} />
               <Route path="/analytics/orders" element={<OrderAnalytics />} />

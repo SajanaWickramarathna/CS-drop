@@ -1,7 +1,8 @@
 const express = require("express");
 const router = express.Router();
 
-
+const brandRoutes = require("./Routes/brandRoutes");
+const categoryRoutes = require("./Routes/categoryRoutes");
 const orderRoutes = require('./Routes/orderRoutes');
 const productRoutes = require("./Routes/productRoutes");
 const cartRoutes = require('./Routes/CartRoutes');
@@ -15,7 +16,8 @@ const ticketRouter = require('./Routes/ticketroute');
 const chatRouter = require('./Routes/chatRoute');
 
 
-
+router.use("/brands", brandRoutes); 
+router.use("/categories", categoryRoutes);
 router.use("/products", productRoutes);
 router.use("/cart", cartRoutes);
 router.use("/orders", orderRoutes);
