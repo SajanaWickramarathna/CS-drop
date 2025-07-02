@@ -3,12 +3,19 @@ const Brand = require('../Models/brand');
 
 exports.addProduct = async (req, res) => {
   try {
-    const { product_name, product_description, product_price, product_status, product_image, category_id, brand_id } = req.body;
+    const { product_name, product_description, product_price, product_status, category_id, brand_id } = req.body;
     if (!category_id || !brand_id)
       return res.status(400).json({ error: 'category_id and brand_id are required' });
 
     const brand = await Brand.findOne({ brand_id: Number(brand_id), category_id: Number(category_id) });
     if (!brand) return res.status(400).json({ error: 'Brand does not belong to the given category' });
+
+    let product_image = "";
+    if (req.file && req.file.filename) {
+      product_image = req.file.filename; // or req.file.path if that's how you store
+    } else {
+      return res.status(400).json({ error: 'Product image is required' });
+    }
 
     const product = new Product({
       product_name,
@@ -50,6 +57,11 @@ exports.updateProduct = async (req, res) => {
   try {
     const { id } = req.params;
     const update = req.body;
+
+    // Handle optional image upload
+    if (req.file && req.file.filename) {
+      update.product_image = req.file.filename;
+    }
 
     if (update.category_id || update.brand_id) {
       const catId = update.category_id ? Number(update.category_id) : undefined;

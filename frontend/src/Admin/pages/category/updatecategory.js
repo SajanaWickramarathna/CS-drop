@@ -2,19 +2,17 @@ import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
-export default function UpdateCategory({ updateCategory }) {
+export default function UpdateCategory() {
   const [categoryData, setCategoryData] = useState({
     category_id: '',
     category_name: '',
     category_description: '',
     category_status: 'active',
     category_image: '',
-    category_brand_id: '',
   });
 
   const [imagePreview, setImagePreview] = useState('');
   const [categoryImage, setCategoryImage] = useState(null);
-  const [brandData, setBrandData] = useState({}); // Prevent undefined error
   const [successMessage, setSuccessMessage] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
 
@@ -30,29 +28,16 @@ export default function UpdateCategory({ updateCategory }) {
         category_description: categoryDataFromLocation.category_description || '',
         category_status: categoryDataFromLocation.category_status || 'active',
         category_image: categoryDataFromLocation.category_image || '',
-        category_brand_id: categoryDataFromLocation.category_brand_id || '', // Fixed mismatch
       });
-      setImagePreview(`http://localhost:3001${categoryDataFromLocation.category_image}`);
+      setImagePreview(
+        categoryDataFromLocation.category_image?.startsWith('http')
+          ? categoryDataFromLocation.category_image
+          : `http://localhost:3001${categoryDataFromLocation.category_image || ''}`
+      );
     } else {
-      navigate('admin-dashboard/category'); 
+      navigate('/admin-dashboard/category');
     }
   }, [categoryDataFromLocation, navigate]);
-
-  const getBrandData = async () => {
-    if (!categoryData.category_brand_id) return;     
-    try {
-      const response = await axios.get(
-        `http://localhost:3001/api/brands/brand?id=${categoryData.category_brand_id}`
-      );
-      setBrandData(response.data || {});
-    } catch (error) {
-      console.error('Error fetching brand data:', error);
-    }
-  };
-
-  useEffect(() => {
-    getBrandData();
-  }, [categoryData.category_brand_id]); 
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -60,6 +45,7 @@ export default function UpdateCategory({ updateCategory }) {
       ...prevData,
       [name]: value,
     }));
+    setErrorMessage('');
   };
 
   const handleImageChange = (e) => {
@@ -78,37 +64,49 @@ export default function UpdateCategory({ updateCategory }) {
     setSuccessMessage('');
     setErrorMessage('');
 
-    if (!categoryData.category_name || !categoryData.category_description) {
+    if (!categoryData.category_name.trim() || !categoryData.category_description.trim()) {
       setErrorMessage('Please fill in all required fields.');
       return;
     }
 
+    // Check duplicate name (optional, but matches AddCategory)
+    try {
+      const nameToCheck = categoryData.category_name.trim().toLowerCase();
+      const checkRes = await axios.get("http://localhost:3001/api/categories");
+      const duplicate = checkRes.data.find(cat =>
+        cat.category_name && cat.category_name.trim().toLowerCase() === nameToCheck &&
+        cat.category_id !== categoryData.category_id
+      );
+      if (duplicate) {
+        setErrorMessage("Category name already exists.");
+        return;
+      }
+    } catch (err) {
+      // Allow update to proceed if fetch fails, but you may log error
+    }
+
     const formDataToSend = new FormData();
-    formDataToSend.append('category_id', categoryData.category_id);
-    formDataToSend.append('category_name', categoryData.category_name);
+    formDataToSend.append('category_name', categoryData.category_name.trim());
     formDataToSend.append('category_description', categoryData.category_description);
     formDataToSend.append('category_status', categoryData.category_status);
-    formDataToSend.append('category_brand_id', categoryData.category_brand_id);
     if (categoryImage) formDataToSend.append('category_image', categoryImage);
 
     try {
       const response = await axios.put(
-        'http://localhost:3001/api/categories/updatecategory',
+        `http://localhost:3001/api/categories/updatecategory/${categoryData.category_id}`,
         formDataToSend,
         {
           headers: { 'Content-Type': 'multipart/form-data' },
         }
       );
-      console.log(response);
       if (response.status === 200) {
         setSuccessMessage('Category updated successfully!');
         setTimeout(() => {
           navigate('/admin-dashboard/category');
-        }, 2000);
+        }, 1500);
       }
     } catch (err) {
-      console.error('Axios Error:', err);
-      setErrorMessage(err.response?.data?.message || 'Failed to update category');
+      setErrorMessage(err.response?.data?.error || 'Failed to update category');
     }
   };
 
@@ -126,17 +124,6 @@ export default function UpdateCategory({ updateCategory }) {
 
         {successMessage && <p className="mb-4 text-green-500 font-medium">{successMessage}</p>}
         {errorMessage && <p className="mb-4 text-red-500 font-medium">{errorMessage}</p>}
-
-        <div className="mb-4">
-          <label className="block text-gray-700 font-medium mb-2">Brand Name</label>
-          <input
-            type="text"
-            name="brand_name"
-            className="w-full px-4 py-2 border border-gray-300 rounded-md"
-            value={brandData.brand_name || 'N/A'}
-            readOnly
-          />
-        </div>
 
         <div className="mb-4">
           <label className="block text-gray-700 font-medium mb-2">Category Name</label>

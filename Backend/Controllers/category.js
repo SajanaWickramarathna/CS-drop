@@ -1,15 +1,24 @@
 const Category = require('../Models/category');
 
+// ADD CATEGORY
 exports.addCategory = async (req, res) => {
   try {
-    const { category_name, category_description, category_image, category_status } = req.body;
-    const exists = await Category.findOne({ category_name });
+    let imagePath = '';
+    if (req.file) {
+      imagePath = '/uploads/' + req.file.filename;
+    }
+    const { category_name, category_description, category_status } = req.body;
+
+    // Case-insensitive, trimmed duplicate check
+    const exists = await Category.findOne({
+      category_name: { $regex: `^${category_name.trim()}$`, $options: "i" }
+    });
     if (exists) return res.status(400).json({ error: 'Category name already exists.' });
 
     const category = new Category({
-      category_name,
+      category_name: category_name.trim(),
       category_description,
-      category_image,
+      category_image: imagePath,
       category_status
     });
     await category.save();
@@ -44,9 +53,15 @@ exports.updateCategory = async (req, res) => {
     const { id } = req.params;
     const update = req.body;
     if (update.category_name) {
-      // Check for name uniqueness
-      const exists = await Category.findOne({ category_name: update.category_name, category_id: { $ne: Number(id) } });
+      const exists = await Category.findOne({
+        category_name: { $regex: `^${update.category_name.trim()}$`, $options: "i" },
+        category_id: { $ne: Number(id) }
+      });
       if (exists) return res.status(400).json({ error: 'Category name already exists.' });
+      update.category_name = update.category_name.trim();
+    }
+    if (req.file) {
+      update.category_image = '/uploads/' + req.file.filename;
     }
     const category = await Category.findOneAndUpdate({ category_id: Number(id) }, update, { new: true });
     if (!category) return res.status(404).json({ error: 'Category not found' });

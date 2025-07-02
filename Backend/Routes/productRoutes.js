@@ -4,17 +4,19 @@ const router = express.Router();
 const upload = require("../middleware/uploadMiddleware");
 const ProductController = require('../Controllers/product'); 
 
-router.get('/', ProductController.getProducts);  
-router.get('/product', ProductController.getProductById); 
-router.get('/productbycategory', ProductController.getProductByCategoryId);
-router.get('/productbybrand', ProductController.getProductByBrandId);
-router.get('/productid', ProductController.getProductId);
-router.post('/addproduct', upload.single("product_image"), ProductController.addProduct); 
-router.put('/updateproduct', upload.single("product_image"), ProductController.updateProduct);
-//router.put('/stockupdate', ProductController.reduceProductStock);
+// Get all products
+router.get('/', ProductController.getAllProducts);
 
-router.delete('/deleteproduct', ProductController.deleteProduct); 
-router.delete('/deleteproductcategory', ProductController.deleteProductbyCategory);
-router.delete('/deleteproductbrand', ProductController.deleteProductbyBrand);
+// Get product by ID
+router.get('/product/:id', ProductController.getProductById);
+
+// Add product
+router.post('/addproduct', upload.single("product_image"), ProductController.addProduct);
+
+// Update product
+router.put('/updateproduct/:id', upload.single("product_image"), ProductController.updateProduct);
+
+// Delete product
+router.delete('/deleteproduct/:id', ProductController.deleteProduct);
 
 module.exports = router;

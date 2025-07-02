@@ -9,17 +9,18 @@ import Addcategory from './addcategory';
 import Updatecategory from './updatecategory';
 
 export default function Category() {
-  const [selectedCat, setSelectedCat] = useState({});
-  const [loading, setLoading] = useState(false);
+  const [selectedCat, setSelectedCat] = useState(null);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [deleteData, setDeleteData] = useState(null);
 
   const navigate = useNavigate();
 
+  // Handle edit: fetch category by ID and navigate to update page
   useEffect(() => {
-    if (selectedCat?.id && selectedCat?.name) {
-      getCategoryById();
+    if (selectedCat?.category_id) {
+      getCategoryById(selectedCat.category_id);
     }
+    // eslint-disable-next-line
   }, [selectedCat]);
 
   const handleClickOpen = (category) => {
@@ -32,17 +33,12 @@ export default function Category() {
     setDeleteData(null);
   };
 
-  const getCategoryById = async () => {
-    if (!selectedCat?.id) {
-      console.error("Error: No category selected.");
-      return;
-    }
-  
+  const getCategoryById = async (id) => {
     try {
-      const response = await axios.get(`http://localhost:3001/api/categories/category?id=${selectedCat.id}`);
+      const response = await axios.get(`http://localhost:3001/api/categories/category/${id}`);
       if (response.status !== 200) {
         throw new Error("Failed to fetch category data");
-      }  
+      }
       navigate("/admin-dashboard/category/updatecategory", { state: { categoryData: response.data } });
     } catch (error) {
       console.error("Axios Error:", error.response?.data || error.message);
@@ -53,17 +49,15 @@ export default function Category() {
     if (!deleteData) return;
 
     try {
-      const response = await axios.delete(`http://localhost:3001/api/categories/deletecategory?id=${deleteData.id}`);
+      const response = await axios.delete(`http://localhost:3001/api/categories/deletecategory/${deleteData.category_id}`);
       if (response.status === 200) {
         handleClickClose();
-        setTimeout(() => {
-          window.location.reload();
-        });
+        // Optionally: trigger a refresh in Allcategory via state or context instead of reload
+        window.location.reload();
       }
     } catch (error) {
       handleClickClose();
       console.error('Axios Error:', error);
-      throw error;
     }
   };
 
@@ -73,16 +67,14 @@ export default function Category() {
         <Categorybuttons />
       </div>
 
-      {loading && <div>Loading...</div>}
-
       <div className="shadow-gray-700 shadow-md rounded-2xl">
         <Routes>
           <Route
             path="/"
             element={
               <Allcategory
-                onCategorySelect={(categoryData) => setSelectedCat(categoryData)}
-                onCategoryDelete={(category) => handleClickOpen(category)}
+                onCategorySelect={setSelectedCat} // Pass row object directly
+                onCategoryDelete={handleClickOpen}
               />
             }
           />
@@ -97,15 +89,15 @@ export default function Category() {
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
       >
-        <DialogTitle id="alert-dialog-title">Delete {deleteData?.name || 'this'} Category</DialogTitle>
+        <DialogTitle id="alert-dialog-title">Delete {deleteData?.category_name || 'this'} Category</DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
-            Are you sure you want to delete {deleteData?.name || 'this'} Category?
+            Are you sure you want to delete {deleteData?.category_name || 'this'} Category?
           </DialogContentText>
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClickClose}>Cancel</Button>
-          <Button onClick={deleteCategory} autoFocus>
+          <Button onClick={deleteCategory} autoFocus color="error">
             Delete
           </Button>
         </DialogActions>

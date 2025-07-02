@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import axios from "axios";
 
 const AddCategory = () => {
@@ -12,9 +12,6 @@ const AddCategory = () => {
   const [preview, setPreview] = useState(null);
   const [successMessage, setSuccessMessage] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
-
-  // Remove all brand logic from categories!
-  // Categories should be unique and not depend on brands.
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -34,24 +31,34 @@ const AddCategory = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Check for duplicate category name (client-side)
+    // Normalize name for duplicate check
+    const nameToCheck = formData.category_name.trim().toLowerCase();
+
     try {
-      const checkRes = await axios.get(
-        `http://localhost:3001/api/categories?name=${formData.category_name}`
+      // Get all categories and check normalized
+      const checkRes = await axios.get("http://localhost:3001/api/categories");
+      const duplicate = checkRes.data.find(
+        cat => cat.category_name && cat.category_name.trim().toLowerCase() === nameToCheck
       );
-      if (checkRes.data && checkRes.data.length > 0) {
+      if (duplicate) {
         setErrorMessage("Category name already exists.");
         return;
       }
-    } catch {}
+    } catch (err) {
+      setErrorMessage("Failed to check existing categories.");
+      return;
+    }
 
     const formDataToSend = new FormData();
-    formDataToSend.append("category_name", formData.category_name);
+    formDataToSend.append("category_name", formData.category_name.trim());
     formDataToSend.append("category_description", formData.category_description);
     formDataToSend.append("category_status", formData.category_status);
 
     if (catIcon) {
       formDataToSend.append("category_image", catIcon);
+    } else {
+      setErrorMessage("Category image is required.");
+      return;
     }
 
     try {
@@ -65,7 +72,6 @@ const AddCategory = () => {
       if (response.status === 200) {
         alert("Category Added Successfully");
         setSuccessMessage("Process complete. Redirecting....");
-
         setFormData({
           category_name: "",
           category_description: "",

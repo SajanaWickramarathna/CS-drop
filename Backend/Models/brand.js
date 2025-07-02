@@ -14,7 +14,7 @@ const brandSchema = new Schema({
   brand_name: { type: String, required: true },
   brand_description: { type: String, required: true },
   brand_image: { type: String, required: true },
-  brand_status: { type: String, enum: ['active', 'draft'], default: "active" },
+  brand_status: { type: String, enum: ['active', 'inactive', 'draft'], default: "active" }, // Added 'inactive'
   category_id: { type: Number, required: true }, // Link to category
   category_name: { type: String }, // For display; fill in controller if needed
   created_at: { type: Date, default: Date.now },

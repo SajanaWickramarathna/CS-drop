@@ -25,7 +25,7 @@ const AddProduct = () => {
 
   useEffect(() => {
     if (categoryId) {
-      axios.get(`http://localhost:3001/api/brands/bycategory?categoryId=${categoryId}`) // implement this API
+      axios.get(`http://localhost:3001/api/brands/bycategory/${categoryId}`) // <-- Fixed endpoint
         .then(res => setBrands(res.data))
         .catch(() => setErrorMessage("Error fetching brands"));
     } else {
@@ -45,6 +45,7 @@ const AddProduct = () => {
       setPreview(URL.createObjectURL(file));
     } else {
       setErrorMessage("Please select a valid image file.");
+      setProductImage(null);
     }
   };
 
@@ -91,8 +92,10 @@ const AddProduct = () => {
           window.location.href = "/admin-dashboard/products";
         }, 1500);
       }
-    } catch {
-      setErrorMessage("Failed to add product. Please try again.");
+    } catch (err) {
+      setErrorMessage(
+        err.response?.data?.error || "Failed to add product. Please try again."
+      );
     }
   };
 

@@ -13,7 +13,7 @@ const productSchema = new Schema({
   product_id: { type: Number, unique: true },
   product_name: { type: String, required: true },
   product_description: { type: String, required: true },
-  product_status: { type: String, enum: ['active', 'draft'], default: "active" },
+  product_status: { type: String, enum: ['active', 'inactive', 'draft'], default: "active" }, // Added 'inactive'
   product_price: { type: Number, required: true },
   product_image: { type: String, required: true },
   category_id: { type: Number, required: true }, // required

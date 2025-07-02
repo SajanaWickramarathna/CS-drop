@@ -3,11 +3,19 @@ const Category = require('../Models/category');
 
 exports.addBrand = async (req, res) => {
   try {
-    const { brand_name, brand_description, brand_image, brand_status, category_id } = req.body;
+    const { brand_name, brand_description, brand_status, category_id } = req.body;
     if (!category_id) return res.status(400).json({ error: 'category_id is required' });
 
     const category = await Category.findOne({ category_id: Number(category_id) });
     if (!category) return res.status(400).json({ error: 'Invalid category_id' });
+
+    let brand_image = "";
+    // Handle image uploaded via multer (req.file)
+    if (req.file && req.file.filename) {
+      brand_image = req.file.filename; // or req.file.path if you prefer
+    } else {
+      return res.status(400).json({ error: 'Brand image is required' });
+    }
 
     const brand = new Brand({
       brand_name,
@@ -58,6 +66,10 @@ exports.updateBrand = async (req, res) => {
   try {
     const { id } = req.params;
     const update = req.body;
+    // Handle new image upload if present
+    if (req.file && req.file.filename) {
+      update.brand_image = req.file.filename; // or req.file.path
+    }
     if (update.category_id) {
       // Validate new category
       const category = await Category.findOne({ category_id: Number(update.category_id) });

@@ -1,24 +1,32 @@
-import React, { useEffect, useState } from 'react';
-import { Routes, Route, useNavigate } from 'react-router-dom';
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle, DialogContentText } from '@mui/material';
-import axios from 'axios';
+import React, { useEffect, useState } from "react";
+import { Routes, Route, useNavigate } from "react-router-dom";
+import {
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  DialogContentText,
+} from "@mui/material";
+import axios from "axios";
 
-import Allproduct from './allproducts';
-import Updateproduct from './updateproduct';
+import Allproduct from "./allproducts";
+import Updateproduct from "./updateproduct";
 
 export default function Product() {
-  const [selectedCat, setSelectedCat] = useState({});
+  const [selectedProduct, setSelectedProduct] = useState({});
   const [loading, setLoading] = useState(false);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [deleteData, setDeleteData] = useState(null);
+  const [productsRefreshKey, setProductsRefreshKey] = useState(0);
 
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (selectedCat?.id && selectedCat?.name) {
+    if (selectedProduct?.id && selectedProduct?.name) {
       getProductById();
     }
-  }, [selectedCat]);
+  }, [selectedProduct]);
 
   const handleClickOpen = (product) => {
     setDeleteData(product);
@@ -31,62 +39,64 @@ export default function Product() {
   };
 
   const getProductById = async () => {
-    if (!selectedCat?.id) {
+    if (!selectedProduct?.id) {
       console.error("Error: No product selected.");
       return;
     }
-  
     try {
-      const response = await axios.get(`http://localhost:3001/api/products/product?id=${selectedCat.id}`);
+      const response = await axios.get(
+        `http://localhost:3001/api/products/product/${selectedProduct.id}`
+      );
       if (response.status !== 200) {
         throw new Error("Failed to fetch product data");
-      }  
-      navigate("/admin-dashboard/products/updateproduct", { state: { productData: response.data } });
+      }
+      navigate("/admin-dashboard/products/updateproduct", {
+        state: { productData: response.data },
+      });
     } catch (error) {
       console.error("Axios Error:", error.response?.data || error.message);
     }
   };
 
   const deleteProduct = async () => {
-  if (!deleteData) return;
+    if (!deleteData) return;
 
-  try {
-    const productDetailsResponse = await axios.get(`http://localhost:3001/api/products/product?id=${deleteData.id}`);
-    const productDetails = productDetailsResponse.data;
+    try {
+      const productDetailsResponse = await axios.get(
+        `http://localhost:3001/api/products/product/${deleteData.id}`
+      );
+      const productDetails = productDetailsResponse.data;
 
-    const results = await Promise.allSettled([
-      axios.delete(`http://localhost:3001/api/products/deleteproduct?id=${deleteData.id}`),
-      axios.post("http://localhost:3001/api/stocks/addstock", {
-        product_id: productDetails.product_id,
-        product_name: productDetails.product_name,
-        brand_id: productDetails.product_brand_id,
-        category_id: productDetails.product_category_id,
-        //quantity: productDetails.stock_count,
-        type: "remove"
-      })
-    ]);
+      const results = await Promise.allSettled([
+        axios.delete(
+          `http://localhost:3001/api/products/deleteproduct/${deleteData.id}`
+        ),
+        axios.post("http://localhost:3001/api/stocks/addstock", {
+          product_id: productDetails.product_id,
+          product_name: productDetails.product_name,
+          brand_id: productDetails.brand_id,
+          category_id: productDetails.category_id,
+          // quantity: productDetails.stock_count,
+          type: "remove",
+        }),
+      ]);
 
-    // Optional: Log which ones failed
-    results.forEach((result, index) => {
-      if (result.status === "rejected") {
-        console.error(`Error in operation ${index + 1}:`, result.reason);
-      }
-    });
+      results.forEach((result, index) => {
+        if (result.status === "rejected") {
+          console.error(`Error in operation ${index + 1}:`, result.reason);
+        }
+      });
 
-    handleClickClose();
-    setTimeout(() => {
-      window.location.reload();
-    });
-  } catch (error) {
-    handleClickClose();
-    console.error('Unexpected error during deletion:', error);
-  }
-};
-
+      handleClickClose();
+      setProductsRefreshKey((k) => k + 1); // refresh the list!
+    } catch (error) {
+      handleClickClose();
+      console.error("Unexpected error during deletion:", error);
+    }
+  };
 
   return (
     <div className="container">
-
       {loading && <div>Loading...</div>}
 
       <div className="shadow-gray-700 shadow-md rounded-2xl">
@@ -95,8 +105,9 @@ export default function Product() {
             path="/"
             element={
               <Allproduct
-                onProductSelect={(productData) => setSelectedCat(productData)}
-                onProductDelete={(product) => handleClickOpen(product)}
+                onProductSelect={setSelectedProduct}
+                onProductDelete={handleClickOpen}
+                refreshKey={productsRefreshKey}
               />
             }
           />
@@ -110,10 +121,13 @@ export default function Product() {
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
       >
-        <DialogTitle id="alert-dialog-title">Delete {deleteData?.name || 'this'} Product</DialogTitle>
+        <DialogTitle id="alert-dialog-title">
+          Delete {deleteData?.name || "this"} Product
+        </DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
-            Are you sure you want to delete {deleteData?.name || 'this'} Product?
+            Are you sure you want to delete {deleteData?.name || "this"}{" "}
+            Product?
           </DialogContentText>
         </DialogContent>
         <DialogActions>

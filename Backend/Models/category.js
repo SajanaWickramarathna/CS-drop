@@ -11,12 +11,20 @@ const Counter = mongoose.models.counter || mongoose.model("counter", counterSche
 // Category Schema
 const categorySchema = new Schema({
   category_id: { type: Number, unique: true },
-  category_name: { type: String, required: true, unique: true }, // UNIQUE!
+  category_name: { type: String, required: true, unique: true },
   category_description: { type: String, required: true },
   category_image: { type: String, required: true },
   category_status: { type: String, enum: ['active', 'inactive'], default: "active" },
   product_count: { type: Number, default: 0 },
   created_at: { type: Date, default: Date.now },
+});
+
+// Normalize name before save
+categorySchema.pre("save", function(next) {
+  if (this.category_name) {
+    this.category_name = this.category_name.trim();
+  }
+  next();
 });
 
 // Pre-save middleware to auto-increment `category_id`
