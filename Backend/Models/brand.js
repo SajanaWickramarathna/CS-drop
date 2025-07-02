@@ -6,31 +6,30 @@ const counterSchema = new Schema({
   name: { type: String, required: true, unique: true },
   value: { type: Number, required: true, default: 0 },
 });
+const Counter = mongoose.models.counter || mongoose.model("counter", counterSchema);
 
-const Counter = mongoose.model("counter", counterSchema);
-
-// brand Schema
+// Brand Schema
 const brandSchema = new Schema({
   brand_id: { type: Number, unique: true },
   brand_name: { type: String, required: true },
   brand_description: { type: String, required: true },
   brand_image: { type: String, required: true },
   brand_status: { type: String, enum: ['active', 'draft'], default: "active" },
-  category_count: {type: Number, default:0},
+  category_id: { type: Number, required: true }, // Link to category
+  category_name: { type: String }, // For display; fill in controller if needed
   created_at: { type: Date, default: Date.now },
 });
 
 // Pre-save middleware to auto-increment `brand_id`
 brandSchema.pre('save', async function (next) {
-  if (!this.isNew) return next(); // Only run when creating a new document
-
+  if (!this.isNew) return next();
   try {
     const counter = await Counter.findOneAndUpdate(
       { name: "brand_id" },
       { $inc: { value: 1 } },
-      { new: true, upsert: true } // Create a new counter document if it doesn't exist
+      { new: true, upsert: true }
     );
-    this.brand_id = counter.value; // Assign the incremented value to `brand_id`
+    this.brand_id = counter.value;
     next();
   } catch (error) {
     next(error);
@@ -38,5 +37,4 @@ brandSchema.pre('save', async function (next) {
 });
 
 const Brand = mongoose.model("brand", brandSchema);
-
 module.exports = Brand;

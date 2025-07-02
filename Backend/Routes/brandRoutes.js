@@ -6,9 +6,10 @@ const BrandController = require('../Controllers/brand');
 
 router.get('/', BrandController.getBrands);
 router.get('/brand', BrandController.getBrandById);
+router.get('/bycategory', BrandController.getBrandsByCategoryId); // (added for new structure)
 router.post('/addbrand', upload.single("brand_image"), BrandController.addBrand);
-router.put('/updatebrand',upload.single("brand_image"), BrandController.updateBrand);
-router.put('/updatecatcount',BrandController.updateCategoryCount);
+router.put('/updatebrand', upload.single("brand_image"), BrandController.updateBrand);
+router.put('/updatecatcount', BrandController.updateCategoryCount);
 router.delete('/deletebrand', BrandController.deleteBrand);
 
 module.exports = router;

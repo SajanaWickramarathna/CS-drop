@@ -14,9 +14,11 @@ export default function Shop() {
   const [selectedBrand, setSelectedBrand] = useState('');
   const [maxPrice, setMaxPrice] = useState(1000000000);
   const [searchQuery, setSearchQuery] = useState('');
-  
-  const token = localStorage.getItem('token');
 
+  // --- Additional for dynamic filter panel
+  const [showFilterPanel, setShowFilterPanel] = useState(false);
+
+  const token = localStorage.getItem('token');
 
   useEffect(() => {
     axios.get('http://localhost:3001/api/products')
@@ -70,82 +72,139 @@ export default function Shop() {
     });
   };
 
+  // --- Make filter panel appear only on category select
+  const handleCategoryClick = (category_id) => {
+    setSelectedCategory(category_id);
+    setShowFilterPanel(!!category_id);
+    setSelectedBrand('');
+  };
+
+  // --- Show all products button
+  const handleShowAllProducts = () => {
+    setSelectedCategory('');
+    setShowFilterPanel(false);
+    setSelectedBrand('');
+    setMaxPrice(1000000);
+    setSearchQuery('');
+  };
+
+  // --- Layout: sidebar and filter panel don't go over nav, use margin-top or padding-top
+  // Assume navbar is 80px height
+  const NAVBAR_HEIGHT = 80;
+
   return (
-    <div>
+    <div className="bg-gray-100 min-h-screen">
       <Nav/>
-      <div className="p-10 bg-gray-100 min-h-screen flex">
-        {/* Centered Toast Message */}
-        <ToastContainer position="top-center" autoClose={3000} />
+      <ToastContainer position="top-center" autoClose={3000} />
 
-
-        {/* Sidebar Filters */}
-        <div className="w-1/4 p-6 bg-white rounded-xl shadow-lg fixed h-4/5 overflow-y-auto my-20 mx-6  left-0">
-          <h2 className="text-2xl font-bold text-gray-900 mb-6">Filters</h2>
-
-          {/* Search Functionality */}
-          <div className="mb-6">
-            <label className="block text-lg font-medium text-gray-700 mb-2">Search</label>
-            <input
-              type="text"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search by product name"
-              className="p-3 border border-gray-300 rounded-lg w-full focus:outline-none focus:ring-2"
-            />
+      <div className="flex w-full" style={{ minHeight: `calc(100vh - ${NAVBAR_HEIGHT}px)` }}>
+        {/* Category Sidebar */}
+        <aside
+          className="w-60 bg-white text-gray-900 flex flex-col py-10 px-2 gap-2 shadow-lg"
+          style={{
+            minHeight: `calc(100vh - ${NAVBAR_HEIGHT}px)`,
+            marginTop: `${NAVBAR_HEIGHT}px`,
+            position: "sticky",
+            top: `${NAVBAR_HEIGHT}px`,
+            zIndex: 10
+          }}
+        >
+          <div className="mb-4">
+            <h2 className="text-lg font-bold tracking-widest text-blue-700 px-2">CATEGORIES</h2>
           </div>
-
-          {/* Category Filter */}
-          <div className="mb-6">
-            <label className="block text-lg font-medium text-gray-700 mb-2">Category</label>
-            <select
-              value={selectedCategory}
-              onChange={(e) => setSelectedCategory(e.target.value)}
-              className="p-3 border border-gray-300 rounded-lg w-full focus:outline-none focus:ring-2"
-            >
-              <option value="">All Categories</option>
+          <button
+            onClick={handleShowAllProducts}
+            className="mb-3 mx-2 px-3 py-2 rounded-lg bg-blue-500 hover:bg-blue-700 text-white font-semibold transition-colors duration-200"
+          >
+            Show All Products
+          </button>
+          <nav className="flex-1">
+            <ul className="space-y-1">
               {categories.map(category => (
-                <option key={category.category_id} value={category.category_id}>
-                  {category.category_name}
-                </option>
+                <li
+                  key={category.category_id}
+                  className={`flex items-center px-3 py-2 rounded-lg cursor-pointer transition-colors
+                    ${selectedCategory === String(category.category_id)
+                      ? 'bg-blue-100 text-blue-700 font-bold'
+                      : 'hover:bg-gray-200'}`}
+                  onClick={() => handleCategoryClick(String(category.category_id))}
+                >
+                  <span className="ml-2">{category.category_name}</span>
+                </li>
               ))}
-            </select>
-          </div>
+            </ul>
+          </nav>
+        </aside>
 
-          {/* Brand Filter */}
-          <div className="mb-6">
-            <label className="block text-lg font-medium text-gray-700 mb-2">Brand</label>
-            <select
-              value={selectedBrand}
-              onChange={(e) => setSelectedBrand(e.target.value)}
-              className="p-3 border border-gray-300 rounded-lg w-full focus:outline-none focus:ring-2"
-            >
-              <option value="">All Brands</option>
-              {brands.map(brand => (
-                <option key={brand.brand_id} value={brand.brand_id}>
-                  {brand.brand_name}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          {/* Price Range Filter */}
-          <div className="mb-6">
-            <label className="block text-lg font-medium text-gray-700 mb-2">
-              Max Price: LKR {maxPrice}
-            </label>
-            <input
-              type="range"
-              min="0"
-              max="1000000000"
-              value={maxPrice}
-              onChange={(e) => setMaxPrice(Number(e.target.value))}
-              className="w-full appearance-none bg-gray-300 rounded-lg h-2 cursor-pointer"
-            />
-          </div>
-        </div>
+        {/* Dynamic Filter Panel: show only when a category is selected */}
+        {showFilterPanel && (
+          <aside
+            className="w-80 bg-gray-100 border-l border-gray-300 text-gray-900 py-12 px-8"
+            style={{
+              minHeight: `calc(100vh - ${NAVBAR_HEIGHT}px)`,
+              marginTop: `${NAVBAR_HEIGHT}px`,
+              position: "sticky",
+              top: `${NAVBAR_HEIGHT}px`,
+              zIndex: 10
+            }}
+          >
+            <div>
+              <div className="flex items-center text-blue-700 mb-2">
+                <span className="mr-auto text-sm">0 LKR</span>
+                <span className="ml-auto text-sm">{maxPrice} LKR</span>
+              </div>
+              <input
+                type="range"
+                min={0}
+                max={1000000000}
+                value={maxPrice}
+                onChange={e => setMaxPrice(Number(e.target.value))}
+                className="slider w-full h-2 bg-blue-200 rounded-lg appearance-none accent-blue-700"
+                style={{ accentColor: '#2563eb' }}
+              />
+            </div>
+            <div className="mt-8">
+              <h2 className="text-lg font-bold text-blue-700 mb-3">AVAILABILITY</h2>
+              <div className="flex flex-col gap-1 text-sm">
+                <label className="inline-flex items-center gap-2">
+                  <input type="checkbox" className="accent-blue-700" disabled />
+                  OUT OF STOCK
+                </label>
+                <label className="inline-flex items-center gap-2">
+                  <input type="checkbox" className="accent-blue-700" disabled />
+                  IN STOCK
+                </label>
+                <label className="inline-flex items-center gap-2">
+                  <input type="checkbox" className="accent-blue-700" disabled />
+                  COMING SOON
+                </label>
+                <label className="inline-flex items-center gap-2">
+                  <input type="checkbox" className="accent-blue-700" disabled />
+                  PRE-ORDER
+                </label>
+              </div>
+            </div>
+            <div className="mt-8">
+              <h2 className="text-lg font-bold text-blue-700 mb-3">BRAND</h2>
+              <div className="flex flex-col gap-1 text-sm">
+                {brands.map(brand => (
+                  <label key={brand.brand_id} className="inline-flex items-center gap-2">
+                    <input
+                      type="checkbox"
+                      className="accent-blue-700"
+                      checked={selectedBrand === String(brand.brand_id)}
+                      onChange={() => setSelectedBrand(selectedBrand === String(brand.brand_id) ? '' : String(brand.brand_id))}
+                    />
+                    {brand.brand_name}
+                  </label>
+                ))}
+              </div>
+            </div>
+          </aside>
+        )}
 
         {/* Product Grid */}
-        <div className="w-3/4 ml-auto pl-10 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 my-20">
+        <div className={`flex-1 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 py-20 bg-gray-100 min-h-screen`} style={{marginTop: `${NAVBAR_HEIGHT}px`}}>
           {filteredProducts.length > 0 ? (
             filteredProducts.map((product) => (
               <div
@@ -171,8 +230,6 @@ export default function Shop() {
                   >
                     Add to Cart
                   </button>
-
-                  {/* View Product Link */}
                   <Link
                     to={`/product/${product.product_id}`}
                     className="w-full mt-2 py-3 text-gray-900 bg-transparent border-2 border-blue-500 hover:bg-blue-500 hover:text-white rounded-lg transition duration-300 flex items-center justify-center"
